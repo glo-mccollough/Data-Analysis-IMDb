@@ -1,0 +1,1047 @@
+#Load Packages -------
+install.packages('tidyverse')		#various packages
+install.packages('here')			#filing data locally
+install.packages('janitor')		#cleaning up data
+install.packages('skimr')		
+install.packages('dplyr')
+install.packages('magrittr')		#pipe
+install.packages('scales')
+install.packages('data.table')
+install.packages('RColorBrewer')
+
+
+#Load Library ------
+library(tidyverse)
+library(ggplot2)
+library(here)
+library(janitor)
+library(skimr)
+library(dplyr)
+library(magrittr)
+library(ggplot2)
+library(ggthemes)
+library(scales)
+library(data.table)
+library(ggrepel)
+library(RColorBrewer)
+
+
+# Load CSV File ----------------------
+
+IMBD_DB2_2001_2021 <- IMBD_Final_Captsone_All_Data_2001_2021_04052022 %>% clean_names()
+
+glimpse(IMBD_DB2_2001_2021)
+
+
+# Title_ids per genre ===============
+
+IMBD_DB2_2001_2021 %>% 
+  filter(release_year %in% c(2001:2010)) %>%
+  count(title_id)
+#20,411
+ 
+IMBD_DB2_2001_2021 %>% 
+  filter(release_year %in% c(2011:2021)) %>%
+  count(title_id)
+#40,328
+
+IMBD_DB2_2001_2021 %>% 
+  count(title_id)
+#60739
+
+IMBD_DB2_2001_2021 %>% 
+  filter(release_year %in% c(2001:2010),
+         genres %like% 'Action') %>%
+  count(title_id)
+#2,631
+
+IMBD_DB2_2001_2021 %>% 
+  filter(release_year %in% c(2011:2021),
+         genres %like% 'Action') %>%
+  count(title_id)
+#5,257
+
+IMBD_DB2_2001_2021 %>% 
+  filter(genres %like% 'Action') %>% 
+  count(title_id)
+#7,888
+
+IMBD_DB2_2001_2021 %>% 
+  filter(release_year %in% c(2001:2010),
+         genres %like% 'Comedy') %>%
+  count(title_id)
+#6,539
+
+IMBD_DB2_2001_2021 %>% 
+  filter(release_year %in% c(2011:2021),
+         genres %like% 'Comedy') %>%
+  count(title_id)
+#11,165
+
+IMBD_DB2_2001_2021 %>% 
+  filter(genres %like% 'Comedy') %>% 
+  count(title_id)
+#17,704
+
+IMBD_DB2_2001_2021 %>% 
+  filter(release_year %in% c(2001:2010),
+         genres %like% 'Drama') %>%
+  count(title_id)
+#10,618
+
+IMBD_DB2_2001_2021 %>% 
+  filter(release_year %in% c(2011:2021),
+         genres %like% 'Drama') %>%
+  count(title_id)
+#20,801
+
+IMBD_DB2_2001_2021 %>% 
+  filter(genres %like% 'Drama') %>% 
+  count(title_id)
+#31,419
+
+IMBD_DB2_2001_2021 %>% 
+  filter(release_year %in% c(2001:2010),
+         genres %like% 'Fantasy') %>%
+  count(title_id)
+#839
+
+IMBD_DB2_2001_2021 %>% 
+  filter(release_year %in% c(2011:2021),
+         genres %like% 'Fantasy') %>%
+  count(title_id)
+#1,749
+
+IMBD_DB2_2001_2021 %>% 
+  filter(genres %like% 'Fantasy') %>% 
+  count(title_id)
+#2,588
+
+IMBD_DB2_2001_2021 %>% 
+  filter(release_year %in% c(2001:2010),
+         genres %like% 'Romance') %>%
+  count(title_id)
+#2,983
+
+IMBD_DB2_2001_2021 %>% 
+  filter(release_year %in% c(2011:2021),
+         genres %like% 'Romance') %>%
+  count(title_id)
+#4,530
+
+IMBD_DB2_2001_2021 %>% 
+  filter(genres %like% 'Romance') %>% 
+  count(title_id)
+#7,433
+
+IMBD_DB2_2001_2021 %>% 
+  filter(release_year %in% c(2001:2010),
+         genres %like% 'Sci-Fi') %>%
+  count(title_id)
+#714
+
+IMBD_DB2_2001_2021 %>% 
+  filter(release_year %in% c(2011:2021),
+         genres %like% 'Sci-Fi') %>%
+  count(title_id)
+#1,716
+
+IMBD_DB2_2001_2021 %>% 
+  filter(genres %like% 'Sci-Fi') %>% 
+  count(title_id)
+#2,430
+
+# Just MEAN data ===============
+# ALL GENRES - MEAN 01-21 ---------------------------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(act_lead %in% c('1':'3'),
+         release_year %in% c(2001:2021)) %>% 
+  summarise(action_mean_age = mean(age_at_release))  
+
+# 1        1 actor                    42.8
+# 2        1 actress                  36.7
+# 3        2 actor                    42.7
+# 4        2 actress                  35.9
+# 5        3 actor                    44.3
+# 6        3 actress                  37.5
+
+# ALL GENRES - MEAN 01-10 ---------------------------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(act_lead %in% c('1':'3'),
+         release_year %in% c(2001:2010)) %>% 
+  summarise(action_mean_age = mean(age_at_release))  
+
+# act_lead actor_actress action_mean_age
+# <dbl> <chr>                   <dbl>
+#   1        1 actor                    40.0
+# 2        1 actress                  34.6
+# 3        2 actor                    39.9
+# 4        2 actress                  33.3
+# 5        3 actor                    41.8
+# 6        3 actress                  35.0
+
+# ALL GENRES - MEAN 01-10 ---------------------------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(act_lead %in% c('1':'3'),
+         release_year %in% c(2011:2021)) %>% 
+  summarise(action_mean_age = mean(age_at_release))  
+
+# act_lead actor_actress action_mean_age
+# <dbl> <chr>                   <dbl>
+#   1        1 actor                    44.4
+# 2        1 actress                  37.6
+# 3        2 actor                    44.2
+# 4        2 actress                  37.3
+# 5        3 actor                    45.8
+# 6        3 actress                  38.8
+
+
+# ACTION - MEAN 01-21 ---------------------------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(genres %like% 'Action',
+         act_lead %in% c('1':'3')) %>% 
+  summarise(action_mean_age = mean(age_at_release))  
+
+#act_lead actor_actress action_mean_age
+#<dbl> <chr>                   <dbl>
+#1        1 actor                    42.2
+#2        1 actress                  34.8
+#3        2 actor                    42.8
+#4        2 actress                  32.5
+#5        3 actor                    44.5
+#6        3 actress                  33.6
+
+
+# ACTION - MEAN 01-10 ---------------------------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(genres %like% 'Action',
+         act_lead %in% c('1':'3'),
+         release_year %in% c(2001:2010)) %>% 
+  summarise(action_mean_age = mean(age_at_release)) 
+
+#<dbl> <chr>                   <dbl>
+#1        1 actor                    39.3
+#2        1 actress                  32.1
+#3        2 actor                    39.3
+#4        2 actress                  30.1
+#5        3 actor                    41.8
+#6        3 actress                  31.6
+
+# ACTION - MEAN 11-21 ---------------------------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(genres %like% 'Action',
+         act_lead %in% c('1':'3'),
+         release_year %in% c(2011:2021)) %>% 
+  summarise(action_mean_age = mean(age_at_release)) 
+
+#act_lead actor_actress action_mean_age
+#<dbl> <chr>                   <dbl>
+#1        1 actor                    43.8
+#2        1 actress                  36.1
+#3        2 actor                    44.8
+#4        2 actress                  33.7
+#5        3 actor                    46.0
+#6        3 actress                  34.8
+
+
+# COMEDY - MEAN 01-21 ---------------------------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(genres %like% 'Comedy',
+         act_lead %in% c('1':'3')) %>% 
+  summarise(comedy_mean_age = mean(age_at_release))
+
+# act_lead actor_actress comedy_mean_age
+# <dbl> <chr>                   <dbl>
+# 1        1 actor                    41.5
+# 2        1 actress                  37.2
+# 3        2 actor                    41.5
+# 4        2 actress                  36.2
+# 5        3 actor                    43.6
+# 6        3 actress                  38.0
+
+# COMEDY - MEAN 01-10 ---------------------------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(genres %like% 'Comedy',
+         act_lead %in% c('1':'3'),
+         release_year %in% c(2001:2010)) %>% 
+  summarise(comedy_mean_age = mean(age_at_release)) 
+
+# act_lead actor_actress comedy_mean_age
+# <dbl> <chr>                   <dbl>
+# 1        1 actor                    38.9
+# 2        1 actress                  34.8
+# 3        2 actor                    38.9
+# 4        2 actress                  33.9
+# 5        3 actor                    41.5
+# 6        3 actress                  35.4
+
+
+# COMEDY - MEAN 11-21 ---------------------------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(genres %like% 'Comedy',
+         act_lead %in% c('1':'3'),
+         release_year %in% c(2011:2021)) %>% 
+  summarise(comedy_mean_age = mean(age_at_release)) 
+
+# act_lead actor_actress comedy_mean_age
+# <dbl> <chr>                   <dbl>
+# 1        1 actor                    43.4
+# 2        1 actress                  38.4
+# 3        2 actor                    43.2
+# 4        2 actress                  37.6
+# 5        3 actor                    45.1
+# 6        3 actress                  39.5
+
+# DRAMA - MEAN 01-21 ---------------------------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(genres %like% 'Drama',
+         act_lead %in% c('1':'3')) %>% 
+  summarise(drama_mean_age = mean(age_at_release))  
+
+# act_lead actor_actress drama_mean_age
+# <dbl> <chr>                  <dbl>
+# 1        1 actor                   42.0
+# 2        1 actress                 36.8
+# 3        2 actor                   42.2
+# 4        2 actress                 36.0
+# 5        3 actor                   44.1
+# 6        3 actress                 38.0
+
+# DRAMA - MEAN 01-10 ---------------------------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(genres %like% 'Drama',
+         act_lead %in% c('1':'3'),
+         release_year %in% c(2001:2010)) %>% 
+  summarise(drama_mean_age = mean(age_at_release))  
+
+# act_lead actor_actress drama_mean_age
+# <dbl> <chr>                  <dbl>
+#   1        1 actor                   39.3
+# 2        1 actress                 34.8
+# 3        2 actor                   39.7
+# 4        2 actress                 33.6
+# 5        3 actor                   41.8
+# 6        3 actress                 35.7
+
+# DRAMA - MEAN 11-21 ---------------------------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(genres %like% 'Drama',
+         act_lead %in% c('1':'3'),
+         release_year %in% c(2011:2021)) %>% 
+  summarise(drama_mean_age = mean(age_at_release))  
+
+# act_lead actor_actress drama_mean_age
+# <dbl> <chr>                  <dbl>
+#   1        1 actor                   43.6
+# 2        1 actress                 37.7
+# 3        2 actor                   43.6
+# 4        2 actress                 37.4
+# 5        3 actor                   45.5
+# 6        3 actress                 39.3
+
+# FANTASY - MEAN 01-21 ---------------------------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(genres %like% 'Fantasy',
+         act_lead %in% c('1':'3')) %>% 
+  summarise(fantasy_mean_age = mean(age_at_release))  
+
+# act_lead actor_actress fantasy_mean_age
+# <dbl> <chr>                    <dbl>
+#   1        1 actor                     40.8
+# 2        1 actress                   32.9
+# 3        2 actor                     41.0
+# 4        2 actress                   33.5
+# 5        3 actor                     44.2
+# 6        3 actress                   35.6
+
+# FANTASY - MEAN 01-10 ---------------------------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(genres %like% 'Fantasy',
+         act_lead %in% c('1':'3'),
+         release_year %in% c(2001:2010)) %>% 
+  summarise(fantasy_mean_age = mean(age_at_release)) 
+
+# act_lead actor_actress fantasy_mean_age
+# <dbl> <chr>                    <dbl>
+#   1        1 actor                     38.4
+# 2        1 actress                   32.1
+# 3        2 actor                     39.9
+# 4        2 actress                   30.0
+# 5        3 actor                     42.5
+# 6        3 actress                   34.1
+
+# FANTASY - MEAN 11-21 ---------------------------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(genres %like% 'Fantasy',
+         act_lead %in% c('1':'3'),
+         release_year %in% c(2011:2021)) %>% 
+  summarise(fantasy_mean_age = mean(age_at_release))  
+
+# act_lead actor_actress fantasy_mean_age
+# <dbl> <chr>                    <dbl>
+#   1        1 actor                     42.2
+# 2        1 actress                   33.3
+# 3        2 actor                     41.6
+# 4        2 actress                   35.4
+# 5        3 actor                     45.2
+# 6        3 actress                   36.5
+
+# ROMANCE - MEAN 01-21 ---------------------------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(genres %like% 'Romance',
+         act_lead %in% c('1':'3')) %>% 
+  summarise(romance_mean_age = mean(age_at_release)) 
+
+# act_lead actor_actress romance_mean_age
+# <dbl> <chr>                    <dbl>
+#   1        1 actor                     37.7
+# 2        1 actress                   34.1
+# 3        2 actor                     37.8
+# 4        2 actress                   33.3
+# 5        3 actor                     42.0
+# 6        3 actress                   37.1
+
+# ROMANCE - MEAN 01-10 ---------------------------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(genres %like% 'Romance',
+         act_lead %in% c('1':'3'),
+         release_year %in% c(2001:2010)) %>% 
+  summarise(romance_mean_age = mean(age_at_release)) 
+
+# act_lead actor_actress romance_mean_age
+# <dbl> <chr>                    <dbl>
+#   1        1 actor                     36.3
+# 2        1 actress                   32.7
+# 3        2 actor                     36.8
+# 4        2 actress                   31.8
+# 5        3 actor                     40.6
+# 6        3 actress                   34.9
+
+# ROMANCE - MEAN 11-21 ---------------------------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(genres %like% 'Romance',
+         act_lead %in% c('1':'3'),
+         release_year %in% c(2011:2021)) %>% 
+  summarise(romance_mean_age = mean(age_at_release)) 
+
+# act_lead actor_actress romance_mean_age
+# <dbl> <chr>                    <dbl>
+#   1        1 actor                     38.8
+# 2        1 actress                   35.0
+# 3        2 actor                     38.6
+# 4        2 actress                   34.4
+# 5        3 actor                     43.1
+# 6        3 actress                   38.7
+
+# SCIFI - MEAN 01-21 ---------------------------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(genres %like% 'Sci-Fi',
+         act_lead %in% c('1':'3')) %>% 
+  summarise(scifi_mean_age = mean(age_at_release))  
+
+# act_lead actor_actress scifi_mean_age
+# <dbl> <chr>                  <dbl>
+#   1        1 actor                   42.1
+# 2        1 actress                 34.9
+# 3        2 actor                   42.1
+# 4        2 actress                 33.7
+# 5        3 actor                   43.9
+# 6        3 actress                 34.7
+
+# SCIFI - MEAN 01-10 ---------------------------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(genres %like% 'Sci-Fi',
+         act_lead %in% c('1':'3'),
+         release_year %in% c(2001:2010)) %>% 
+  summarise(scifi_mean_age = mean(age_at_release))  
+
+# act_lead actor_actress scifi_mean_age
+# <dbl> <chr>                  <dbl>
+#   1        1 actor                   40.3
+# 2        1 actress                 32.7
+# 3        2 actor                   38.8
+# 4        2 actress                 31.7
+# 5        3 actor                   40.5
+# 6        3 actress                 34.3
+
+# SCIFI - MEAN 11-21 ---------------------------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(genres %like% 'Sci-Fi',
+         act_lead %in% c('1':'3'),
+         release_year %in% c(2011:2021)) %>% 
+  summarise(scifi_mean_age = mean(age_at_release))  
+
+# act_lead actor_actress scifi_mean_age
+# <dbl> <chr>                  <dbl>
+#   1        1 actor                   43.1
+# 2        1 actress                 35.6
+# 3        2 actor                   43.5
+# 4        2 actress                 34.8
+# 5        3 actor                   45.5
+# 6        3 actress                 34.9
+
+####GRAPHS ----------
+
+#ALL GENRES 01-21 AvrgAge Top Billed Actor/Actresses --------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(act_lead %in% c('1':'3')) %>% 
+  summarise(avg_age_at_release = mean(age_at_release)) %>% 
+  ggplot(mapping = aes(x = act_lead, y = avg_age_at_release, 
+                       color = actor_actress)) +
+  geom_point(size = 5) +
+  geom_smooth() +
+  theme(panel.background = element_rect('white')) +
+  theme(plot.background = element_rect("white")) +
+  theme(panel.grid = element_line('grey91')) +
+  theme(legend.position = 'bottom', legend.background = element_rect(fill = 'NA', color = 'NA')) +
+  theme(legend.title = element_blank()) +
+  scale_colour_manual(values = rev(brewer.pal(2, "Dark2"))) +
+  ylim(30,47) +
+  labs(title = "IMBD Average Age for Top 3 Actor/Actress",
+       subtitle = "US/EN Movies 2001-2021 in *All Genres*",
+       caption = 'IMBD Database Download on 3/10/2022 \n databases: https://datasets.imdbws.com/ \n details: https://www.imdb.com/interfaces/',
+       x = "Listed Position",
+       y = "Average age of person") 
+
+# ALL GENRES 01-10 AvrgAge Top Billed Actor/Actresses --------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(act_lead %in% c('1':'3'),
+         release_year %in% c(2001:2010)) %>% 
+  summarise(avg_age_at_release = mean(age_at_release)) %>% 
+  ggplot(mapping = aes(x = act_lead, y = avg_age_at_release, 
+                       color = actor_actress)) +
+  geom_point(size = 5) +
+  geom_smooth() +
+  theme(panel.background = element_rect('white')) +
+  theme(plot.background = element_rect("white")) +
+  theme(panel.grid = element_line('grey91')) +
+  theme(legend.position = 'bottom', legend.background = element_rect(fill = 'NA', color = 'NA')) +
+  theme(legend.title = element_blank()) +
+  scale_colour_manual(values = rev(brewer.pal(6, "Dark2"))) +
+  ylim(30,47) +
+  labs(title = "IMBD Average Age for Top 3 Actor/Actress",
+       subtitle = "US/EN Movies 2001-2010 in *All Genres*",
+       caption = 'IMBD Database Download on 3/10/2022 \n databases: https://datasets.imdbws.com/ \n details: https://www.imdb.com/interfaces/',
+       x = "Listed Position",
+       y = "Average age of person") 
+
+# ALL GENRES 11-21 AvrgAge Top Billed Actor/Actresses --------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(act_lead %in% c('1':'3'),
+         release_year %in% c(2011:2021)) %>% 
+  summarise(avg_age_at_release = mean(age_at_release)) %>% 
+  ggplot(mapping = aes(x = act_lead, y = avg_age_at_release, 
+                       color = actor_actress)) +
+  geom_point(size = 5) +
+  geom_smooth() +
+  theme(panel.background = element_rect('white')) +
+  theme(plot.background = element_rect("white")) +
+  theme(panel.grid = element_line('grey91')) +
+  theme(legend.position = 'bottom', legend.background = element_rect(fill = 'NA', color = 'NA')) +
+  theme(legend.title = element_blank()) +
+  scale_colour_manual(values = rev(brewer.pal(9, "Dark2"))) +
+  ylim(30,47) +
+  labs(title = "IMBD Average Age for Top 3 Actor/Actress",
+       subtitle = "US/EN Movies 2011-2021 in *All Genres*",
+       caption = 'IMBD Database Download on 3/10/2022 \n databases: https://datasets.imdbws.com/ \n details: https://www.imdb.com/interfaces/',
+       x = "Listed Position",
+       y = "Average age of person") 
+
+
+
+
+#ACTION 01-21 AvrgAge Top Billed Actor/Actresses --------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(act_lead %in% c('1':'3'),
+         genres %like% 'Action') %>% 
+  summarise(avg_age_at_release = mean(age_at_release)) %>% 
+  ggplot(mapping = aes(x = act_lead, y = avg_age_at_release, 
+                       color = actor_actress)) +
+  geom_point(size = 5) +
+  geom_smooth() +
+  theme(panel.background = element_rect('moccasin')) +
+  theme(plot.background = element_rect("moccasin")) +
+  theme(panel.grid = element_line('tan2')) +
+  theme(legend.position = 'bottom', legend.background = element_rect(fill = 'NA', color = 'tan2')) +
+  theme(legend.title = element_blank()) +
+  scale_colour_manual(values = rev(brewer.pal(7, "YlOrBr"))) +
+  ylim(25,47) +
+  labs(title = "IMBD Average Age for Top 3 Actor/Actress",
+       subtitle = "US/EN Movies 2001-2021 tagged *Action*",
+       caption = 'IMBD Database Download on 3/10/2022 \n databases: https://datasets.imdbws.com/ \n details: https://www.imdb.com/interfaces/',
+       x = "Listed Position",
+       y = "Average age of person") 
+
+#ACTION 01-10 AvrgAge Top Billed Actor/Actresses --------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(act_lead %in% c('1':'3'),
+         genres %like% 'Action',
+         release_year %in% (2001:2010)) %>% 
+  summarise(avg_age_at_release = mean(age_at_release)) %>% 
+  ggplot(mapping = aes(x = act_lead, y = avg_age_at_release, 
+                       color = actor_actress)) +
+  geom_point(size = 5) +
+  geom_smooth() +
+  theme(panel.background = element_rect('moccasin')) +
+  theme(plot.background = element_rect("moccasin")) +
+  theme(panel.grid = element_line('tan2')) +
+  theme(legend.position = 'bottom', legend.background = element_rect(fill = 'NA', color = 'tan2')) +
+  theme(legend.title = element_blank()) +
+  scale_colour_manual(values = rev(brewer.pal(5, "YlOrBr"))) +
+  ylim(25,47) +
+  labs(title = "IMBD Average Age for Top 3 Actor/Actress",
+       subtitle = "US/EN Movies 2001-2010 tagged *Action*",
+       caption = 'IMBD Database Download on 3/10/2022 \n databases: https://datasets.imdbws.com/ \n details: https://www.imdb.com/interfaces/',
+       x = "Listed Position",
+       y = "Average age of person") 
+
+#ACTION 11-21 AvrgAge Top Billed Actor/Actresses --------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(act_lead %in% c('1':'3'),
+         genres %like% 'Action',
+         release_year %in% (2011:2021)) %>% 
+  summarise(avg_age_at_release = mean(age_at_release)) %>% 
+  ggplot(mapping = aes(x = act_lead, y = avg_age_at_release, 
+                       color = actor_actress)) +
+  geom_point(size = 5) +
+  geom_smooth() +
+  theme(panel.background = element_rect('moccasin')) +
+  theme(plot.background = element_rect("moccasin")) +
+  theme(panel.grid = element_line('tan2')) +
+  theme(legend.position = 'bottom', legend.background = element_rect(fill = 'NA', color = 'tan2')) +
+  theme(legend.title = element_blank()) +
+  scale_colour_manual(values = rev(brewer.pal(6, "YlOrBr"))) +
+  ylim(25,47) +
+  labs(title = "IMBD Average Age for Top 3 Actor/Actress",
+       subtitle = "US/EN Movies 2011-2021 tagged *Action*",
+       caption = 'IMBD Database Download on 3/10/2022 \n databases: https://datasets.imdbws.com/ \n details: https://www.imdb.com/interfaces/',
+       x = "Listed Position",
+       y = "Average age of person") 
+
+
+#COMEDY 01-21 AvrgAge Top Billed Actor/Actresses --------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(act_lead %in% c('1':'3'),
+         genres %like% 'Comedy') %>% 
+  summarise(avg_age_at_release = mean(age_at_release)) %>% 
+  ggplot(mapping = aes(x = act_lead, y = avg_age_at_release, 
+                       color = actor_actress)) +
+  geom_point(size = 5) +
+  geom_smooth() +
+  theme(panel.background = element_rect('darkseagreen1')) +
+  theme(plot.background = element_rect("darkseagreen1")) +
+  theme(panel.grid = element_line('turquoise1')) +
+  theme(legend.position = 'bottom', 
+        legend.background = element_rect(fill = 'NA', color = 'turquoise1')) +
+  theme(legend.title = element_blank()) +
+  scale_colour_manual(values = rev(brewer.pal(9, "Paired"))) +
+  ylim(30,47) +
+  labs(title = "IMBD Average Age for Top 3 Actor/Actress",
+       subtitle = "US/EN Movies 2001-2021 tagged *Comedy*",
+       caption = 'IMBD Database Download on 3/10/2022 \n databases: https://datasets.imdbws.com/ \n details: https://www.imdb.com/interfaces/',
+       x = "Listed Position",
+       y = "Average age of person") 
+
+
+#COMEDY 01-10 AvrgAge Top Billed Actor/Actresses --------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(act_lead %in% c('1':'3'),
+         genres %like% 'Comedy',
+         release_year %in% (2001:2010)) %>% 
+  summarise(avg_age_at_release = mean(age_at_release)) %>% 
+  ggplot(mapping = aes(x = act_lead, y = avg_age_at_release, 
+                       color = actor_actress)) +
+  geom_point(size = 5) +
+  geom_smooth() +
+  theme(panel.background = element_rect('darkseagreen1')) +
+  theme(plot.background = element_rect("darkseagreen1")) +
+  theme(panel.grid = element_line('turquoise1')) +
+  theme(legend.position = 'bottom', 
+        legend.background = element_rect(fill = 'NA', color = 'turquoise1')) +
+  theme(legend.title = element_blank()) +
+  scale_colour_manual(values = rev(brewer.pal(8, "Paired"))) +
+  ylim(30,47) +
+  labs(title = "IMBD Average Age for Top 3 Actor/Actress",
+       subtitle = "US/EN Movies 2001-2010 tagged *Comedy*",
+       caption = 'IMBD Database Download on 3/10/2022 \n databases: https://datasets.imdbws.com/ \n details: https://www.imdb.com/interfaces/',
+       x = "Listed Position",
+       y = "Average age of person") 
+
+
+#COMEDY 11-21 AvrgAge Top Billed Actor/Actresses --------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(act_lead %in% c('1':'3'),
+         genres %like% 'Comedy',
+         release_year %in% (2011:2021)) %>% 
+  summarise(avg_age_at_release = mean(age_at_release)) %>% 
+  ggplot(mapping = aes(x = act_lead, y = avg_age_at_release, 
+                       color = actor_actress)) +
+  geom_point(size = 5) +
+  geom_smooth() +
+  theme(panel.background = element_rect('darkseagreen1')) +
+  theme(plot.background = element_rect("darkseagreen1")) +
+  theme(panel.grid = element_line('turquoise1')) +
+  theme(legend.position = 'bottom', 
+        legend.background = element_rect(fill = 'NA', color = 'turquoise1')) +
+  theme(legend.title = element_blank()) +
+  scale_colour_manual(values = rev(brewer.pal(10, "Paired"))) +
+  ylim(30,47) +
+  labs(title = "IMBD Average Age for Top 3 Actor/Actress",
+       subtitle = "US/EN Movies 2011-2021 tagged *Comedy*",
+       caption = 'IMBD Database Download on 3/10/2022 \n databases: https://datasets.imdbws.com/ \n details: https://www.imdb.com/interfaces/',
+       x = "Listed Position",
+       y = "Average age of person") 
+
+
+#DRAMA 01-21 AvrgAge Top Billed Actor/Actresses --------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(act_lead %in% c('1':'3'),
+         genres %like% 'Drama') %>% 
+  summarise(avg_age_at_release = mean(age_at_release)) %>% 
+  ggplot(mapping = aes(x = act_lead, y = avg_age_at_release, 
+                       color = actor_actress)) +
+  geom_point(size = 5) +
+  geom_smooth() +
+  theme(panel.background = element_rect('lavender')) +
+  theme(plot.background = element_rect("lavender")) +
+  theme(panel.grid = element_line('grey70')) +
+  theme(legend.position = 'bottom', 
+        legend.background = element_rect(fill = 'NA', color = 'grey70')) +
+  theme(legend.title = element_blank()) +
+  scale_colour_manual(values = rev(brewer.pal(8, "Spectral"))) +
+  ylim(30,47) +
+  labs(title = "IMBD Average Age for Top 3 Actor/Actress",
+       subtitle = "US/EN Movies 2001-2021 tagged *Drama*",
+       caption = 'IMBD Database Download on 3/10/2022 \n databases: https://datasets.imdbws.com/ \n details: https://www.imdb.com/interfaces/',
+       x = "Listed Position",
+       y = "Average age of person") 
+
+#DRAMA 01-10 AvrgAge Top Billed Actor/Actresses --------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(act_lead %in% c('1':'3'),
+         genres %like% 'Drama',
+         release_year %in% (2001:2010)) %>% 
+  summarise(avg_age_at_release = mean(age_at_release)) %>% 
+  ggplot(mapping = aes(x = act_lead, y = avg_age_at_release, 
+                       color = actor_actress)) +
+  geom_point(size = 5) +
+  geom_smooth() +
+  theme(panel.background = element_rect('lavender')) +
+  theme(plot.background = element_rect("lavender")) +
+  theme(panel.grid = element_line('grey70')) +
+  theme(legend.position = 'bottom', 
+        legend.background = element_rect(fill = 'NA', color = 'grey70')) +
+  theme(legend.title = element_blank()) +
+  scale_colour_manual(values = rev(brewer.pal(10, "Spectral"))) +
+  ylim(30,47) +
+  labs(title = "IMBD Average Age for Top 3 Actor/Actress",
+       subtitle = "US/EN Movies 2001-2010 tagged *Drama*",
+       caption = 'IMBD Database Download on 3/10/2022 \n databases: https://datasets.imdbws.com/ \n details: https://www.imdb.com/interfaces/',
+       x = "Listed Position",
+       y = "Average age of person") 
+
+#DRAMA 11-21 AvrgAge Top Billed Actor/Actresses --------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(act_lead %in% c('1':'3'),
+         genres %like% 'Drama',
+         release_year %in% (2011:2021)) %>% 
+  summarise(avg_age_at_release = mean(age_at_release)) %>% 
+  ggplot(mapping = aes(x = act_lead, y = avg_age_at_release, 
+                       color = actor_actress)) +
+  geom_point(size = 5) +
+  geom_smooth() +
+  theme(panel.background = element_rect('lavender')) +
+  theme(plot.background = element_rect("lavender")) +
+  theme(panel.grid = element_line('grey70')) +
+  theme(legend.position = 'bottom', 
+        legend.background = element_rect(fill = 'NA', color = 'grey70')) +
+  theme(legend.title = element_blank()) +
+  scale_colour_manual(values = rev(brewer.pal(7, "Spectral"))) +
+  ylim(30,47) +
+  labs(title = "IMBD Average Age for Top 3 Actor/Actress",
+       subtitle = "US/EN Movies 2011-2021 tagged *Drama*",
+       caption = 'IMBD Database Download on 3/10/2022 \n databases: https://datasets.imdbws.com/ \n details: https://www.imdb.com/interfaces/',
+       x = "Listed Position",
+       y = "Average age of person") 
+
+
+#FANTASY 01-21 AvrgAge Top Billed Actor/Actresses --------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(act_lead %in% c('1':'3'),
+         genres %like% 'Fantasy') %>% 
+  summarise(avg_age_at_release = mean(age_at_release)) %>% 
+  ggplot(mapping = aes(x = act_lead, y = avg_age_at_release, 
+                       color = actor_actress)) +
+  geom_point(size = 5) +
+  geom_smooth() +
+  theme(panel.background = element_rect('whitesmoke')) +
+  theme(plot.background = element_rect("whitesmoke")) +
+  theme(panel.grid = element_line('thistle2')) +
+  theme(legend.position = 'bottom', 
+        legend.background = element_rect(fill = 'NA', color = 'thistle2')) +
+  theme(legend.title = element_blank()) +
+  scale_colour_manual(values = rev(brewer.pal(4, "Purples"))) +
+  ylim(25,50) +
+  labs(title = "IMBD Average Age for Top 3 Actor/Actress",
+       subtitle = "US/EN Movies 2001-2021 tagged *Fantasy*",
+       caption = 'IMBD Database Download on 3/10/2022 \n databases: https://datasets.imdbws.com/ \n details: https://www.imdb.com/interfaces/',
+       x = "Listed Position",
+       y = "Average age of person") 
+
+
+#FANTASY 01-10 AvrgAge Top Billed Actor/Actresses --------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(act_lead %in% c('1':'3'),
+         genres %like% 'Fantasy',
+         release_year %in% (2001:2010)) %>% 
+  summarise(avg_age_at_release = mean(age_at_release)) %>% 
+  ggplot(mapping = aes(x = act_lead, y = avg_age_at_release, 
+                       color = actor_actress)) +
+  geom_point(size = 5) +
+  geom_smooth() +
+  theme(panel.background = element_rect('whitesmoke')) +
+  theme(plot.background = element_rect("whitesmoke")) +
+  theme(panel.grid = element_line('thistle2')) +
+  theme(legend.position = 'bottom', 
+        legend.background = element_rect(fill = 'NA', color = 'thistle2')) +
+  theme(legend.title = element_blank()) +
+  scale_colour_manual(values = rev(brewer.pal(7, "Accent"))) +
+  ylim(25,50) +
+  labs(title = "IMBD Average Age for Top 3 Actor/Actress",
+       subtitle = "US/EN Movies 2001-2010 tagged *Fantasy*",
+       caption = 'IMBD Database Download on 3/10/2022 \n databases: https://datasets.imdbws.com/ \n details: https://www.imdb.com/interfaces/',
+       x = "Listed Position",
+       y = "Average age of person") 
+
+#FANTASY 11-21 AvrgAge Top Billed Actor/Actresses --------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(act_lead %in% c('1':'3'),
+         genres %like% 'Fantasy',
+         release_year %in% (2011:2021)) %>% 
+  summarise(avg_age_at_release = mean(age_at_release)) %>% 
+  ggplot(mapping = aes(x = act_lead, y = avg_age_at_release, 
+                       color = actor_actress)) +
+  geom_point(size = 5) +
+  geom_smooth() +
+  theme(panel.background = element_rect('whitesmoke')) +
+  theme(plot.background = element_rect("whitesmoke")) +
+  theme(panel.grid = element_line('thistle2')) +
+  theme(legend.position = 'bottom', 
+        legend.background = element_rect(fill = 'NA', color = 'thistle2')) +
+  theme(legend.title = element_blank()) +
+  scale_colour_manual(values = rev(brewer.pal(6, "Accent"))) +
+  ylim(25,50) +
+  labs(title = "IMBD Average Age for Top 3 Actor/Actress",
+       subtitle = "US/EN Movies 2011-2021 tagged *Fantasy*",
+       caption = 'IMBD Database Download on 3/10/2022 \n databases: https://datasets.imdbws.com/ \n details: https://www.imdb.com/interfaces/',
+       x = "Listed Position",
+       y = "Average age of person") 
+
+#ROMANCE 01-21 AvrgAge Top Billed Actor/Actresses --------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(act_lead %in% c('1':'3'),
+         genres %like% 'Romance') %>% 
+  summarise(avg_age_at_release = mean(age_at_release)) %>% 
+  ggplot(mapping = aes(x = act_lead, y = avg_age_at_release, 
+                       color = actor_actress)) +
+  geom_point(size = 5) +
+  geom_smooth() +
+  theme(panel.background = element_rect('mistyrose')) +
+  theme(plot.background = element_rect("mistyrose")) +
+  theme(panel.grid = element_line('pink2')) +
+  theme(legend.position = 'bottom', 
+        legend.background = element_rect(fill = 'NA', color = 'pink2')) +
+  theme(legend.title = element_blank()) +
+  scale_colour_manual(values = rev(brewer.pal(5, "BuPu"))) +
+  ylim(30,45) +
+  labs(title = "IMBD Average Age for Top 3 Actor/Actress",
+       subtitle = "US/EN Movies 2001-2021 tagged *Romance*",
+       caption = 'IMBD Database Download on 3/10/2022 \n databases: https://datasets.imdbws.com/ \n details: https://www.imdb.com/interfaces/',
+       x = "Listed Position",
+       y = "Average age of person") 
+
+#ROMANCE 01-10 AvrgAge Top Billed Actor/Actresses --------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(act_lead %in% c('1':'3'),
+         genres %like% 'Romance',
+         release_year %in% (2001:2010)) %>% 
+  summarise(avg_age_at_release = mean(age_at_release)) %>% 
+  ggplot(mapping = aes(x = act_lead, y = avg_age_at_release, 
+                       color = actor_actress)) +
+  geom_point(size = 5) +
+  geom_smooth() +
+  theme(panel.background = element_rect('mistyrose')) +
+  theme(plot.background = element_rect("mistyrose")) +
+  theme(panel.grid = element_line('pink2')) +
+  theme(legend.position = 'bottom', 
+        legend.background = element_rect(fill = 'NA', color = 'pink2')) +
+  theme(legend.title = element_blank()) +
+  scale_colour_manual(values = rev(brewer.pal(5, "Set3"))) +
+  ylim(30,45) +
+  labs(title = "IMBD Average Age for Top 3 Actor/Actress",
+       subtitle = "US/EN Movies 2001-2010 tagged *Romance*",
+       caption = 'IMBD Database Download on 3/10/2022 \n databases: https://datasets.imdbws.com/ \n details: https://www.imdb.com/interfaces/',
+       x = "Listed Position",
+       y = "Average age of person") 
+
+#ROMANCE 11-21 AvrgAge Top Billed Actor/Actresses --------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(act_lead %in% c('1':'3'),
+         genres %like% 'Romance',
+         release_year %in% (2011:2021)) %>% 
+  summarise(avg_age_at_release = mean(age_at_release)) %>% 
+  ggplot(mapping = aes(x = act_lead, y = avg_age_at_release, 
+                       color = actor_actress)) +
+  geom_point(size = 5) +
+  geom_smooth() +
+  theme(panel.background = element_rect('mistyrose')) +
+  theme(plot.background = element_rect("mistyrose")) +
+  theme(panel.grid = element_line('pink2')) +
+  theme(legend.position = 'bottom', 
+        legend.background = element_rect(fill = 'NA', color = 'pink2')) +
+  theme(legend.title = element_blank()) +
+  scale_colour_manual(values = rev(brewer.pal(5, "PuRd"))) +
+  ylim(30,45) +
+  labs(title = "IMBD Average Age for Top 3 Actor/Actress",
+       subtitle = "US/EN Movies 2011-2021 tagged *Romance*",
+       caption = 'IMBD Database Download on 3/10/2022 \n databases: https://datasets.imdbws.com/ \n details: https://www.imdb.com/interfaces/',
+       x = "Listed Position",
+       y = "Average age of person") 
+
+#SCIFI 01-21 AvrgAge Top Billed Actor/Actresses --------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(act_lead %in% c('1':'3'),
+         genres %like% 'Sci-Fi') %>% 
+  summarise(avg_age_at_release = mean(age_at_release)) %>% 
+  ggplot(mapping = aes(x = act_lead, y = avg_age_at_release, 
+                       color = actor_actress)) +
+  geom_point(size = 5) +
+  geom_smooth() +
+  theme(panel.background = element_rect('grey13')) +
+  theme(plot.background = element_rect("grey13")) +
+  theme(panel.grid = element_line('limegreen')) +
+  theme(legend.position = 'bottom', 
+        legend.background = element_rect(fill = 'NA', color = 'limegreen')) +
+  theme(legend.title = element_blank()) +
+  theme(plot.title = element_text(color="white", face = 'bold')) +
+  theme(axis.title = element_text(color = 'yellow')) +
+  theme(axis.text = element_text(color = 'deepskyblue', face = 'bold')) +
+  theme(plot.subtitle = element_text(color = 'mediumspringgreen', face = 'bold')) +
+  theme(legend.text = element_text(color = 'mediumspringgreen', face = 'bold')) +
+  theme(plot.caption  = element_text(color = 'grey94')) +
+  scale_colour_manual(values = rev(brewer.pal(1, "YlOrRd"))) +
+  ylim(30,50) +
+  labs(title = "IMBD Average Age for Top 3 Actor/Actress", 
+       subtitle = "US/EN Movies 2001-2021 tagged *Sci-Fi*",
+       caption = 'IMBD Database Download on 3/10/2022 \n databases: https://datasets.imdbws.com/ \n details: https://www.imdb.com/interfaces/',
+       x = "Listed Position",
+       y = "Average age of person") 
+
+#SCIFI 01-10 AvrgAge Top Billed Actor/Actresses --------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(act_lead %in% c('1':'3'),
+         genres %like% 'Sci-Fi',
+         release_year %in% (2001:2010)) %>% 
+  summarise(avg_age_at_release = mean(age_at_release)) %>% 
+  ggplot(mapping = aes(x = act_lead, y = avg_age_at_release, 
+                       color = actor_actress)) +
+  geom_point(size = 5) +
+  geom_smooth() +
+  theme(panel.background = element_rect('grey13')) +
+  theme(plot.background = element_rect("grey13")) +
+  theme(panel.grid = element_line('limegreen')) +
+  theme(legend.position = 'bottom', 
+        legend.background = element_rect(fill = 'NA', color = 'limegreen')) +
+  theme(legend.title = element_blank()) +
+  theme(plot.title = element_text(color="white", face = 'bold')) +
+  theme(axis.title = element_text(color = 'yellow')) +
+  theme(axis.text = element_text(color = 'deepskyblue', face = 'bold')) +
+  theme(plot.subtitle = element_text(color = 'mediumspringgreen', face = 'bold')) +
+  theme(legend.text = element_text(color = 'mediumspringgreen', face = 'bold')) +
+  theme(plot.caption  = element_text(color = 'grey94')) +
+  scale_colour_manual(values = rev(brewer.pal(3, "Reds"))) +
+  ylim(30,50) +
+  labs(title = "IMBD Average Age for Top 3 Actor/Actress", 
+       subtitle = "US/EN Movies 2001-2010 tagged *Sci-Fi*",
+       caption = 'IMBD Database Download on 3/10/2022 \n databases: https://datasets.imdbws.com/ \n details: https://www.imdb.com/interfaces/',
+       x = "Listed Position",
+       y = "Average age of person") 
+
+#SCIFI 11-21 AvrgAge Top Billed Actor/Actresses --------------
+IMBD_DB2_2001_2021 %>% 
+  group_by(act_lead, actor_actress) %>%
+  filter(act_lead %in% c('1':'3'),
+         genres %like% 'Sci-Fi',
+         release_year %in% (2011:2021)) %>% 
+  summarise(avg_age_at_release = mean(age_at_release)) %>% 
+  ggplot(mapping = aes(x = act_lead, y = avg_age_at_release, 
+                       color = actor_actress)) +
+  geom_point(size = 5) +
+  geom_smooth() +
+  theme(panel.background = element_rect('grey13')) +
+  theme(plot.background = element_rect("grey13")) +
+  theme(panel.grid = element_line('limegreen')) +
+  theme(legend.position = 'bottom', 
+        legend.background = element_rect(fill = 'NA', color = 'limegreen')) +
+  theme(legend.title = element_blank()) +
+  theme(plot.title = element_text(color="white", face = 'bold')) +
+  theme(axis.title = element_text(color = 'yellow')) +
+  theme(axis.text = element_text(color = 'deepskyblue', face = 'bold')) +
+  theme(plot.subtitle = element_text(color = 'mediumspringgreen', face = 'bold')) +
+  theme(legend.text = element_text(color = 'mediumspringgreen', face = 'bold')) +
+  theme(plot.caption  = element_text(color = 'grey94')) +
+  scale_colour_manual(values = rev(brewer.pal(12, "Set3"))) +
+  ylim(30,50) +
+  labs(title = "IMBD Average Age for Top 3 Actor/Actress", 
+       subtitle = "US/EN Movies 2011-2021 tagged *Sci-Fi*",
+       caption = 'IMBD Database Download on 3/10/2022 \n databases: https://datasets.imdbws.com/ \n details: https://www.imdb.com/interfaces/',
+       x = "Listed Position",
+       y = "Average age of person") 
+
+
+
+
+### .............end ----------------
+
+knitr::stitch('Final_IMBD_Disparity_Script.R')

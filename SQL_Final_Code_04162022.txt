@@ -1,0 +1,153 @@
+SELECT DISTINCT 
+	ta.titleId AS TitleID
+	,tb.primaryTitle AS MovieTitle
+	,nb.primaryName AS LeadName
+	,nb.birthYear AS BirthYear
+	,YEAR(now()) - nb.birthYear AS CurrentAge
+	,tb.startYear - nb.birthYear AS AgeAtRelease
+	,tp.category AS Actor_Actress
+	,tp.ORDERING AS Act_Lead
+	,tb.startYear AS ReleaseYear
+	,nb2.primaryName as DirectorName
+	,tb.genres 
+	,CASE 
+		WHEN tb.genres LIKE 'Action%' THEN 'Action'
+		ELSE '-'
+			END 'Action'
+	,CASE 
+		WHEN tb.genres LIKE '%Adventure%' THEN 'Adventure'
+		ELSE '-'
+			END 'Adventure'
+	,CASE 
+		WHEN tb.genres LIKE '%Animation%' THEN 'Animation'
+		ELSE '-'
+			END 'Animation'
+	,CASE 
+		WHEN tb.genres LIKE '%Biography%' THEN 'Biography'
+		ELSE '-'
+			END 'Biography'
+	,CASE 
+		WHEN tb.genres LIKE '%Comedy%' THEN 'Comedy'
+		ELSE '-'
+			END 'Comedy'
+	,CASE 
+		WHEN tb.genres LIKE '%Crime%' THEN 'Crime'
+		ELSE '-'
+			END 'Crime'
+	,CASE 
+		WHEN tb.genres LIKE '%Documentary%' THEN 'Documentary'
+		ELSE '-'
+			END 'Documentary'
+	,CASE 
+		WHEN tb.genres LIKE '%Drama%' THEN 'Drama'
+		ELSE '-'
+			END 'Drama'
+	,CASE 
+		WHEN tb.genres LIKE '%Family%' THEN 'Family'
+		ELSE '-'
+			END 'Family'
+	,CASE 
+		WHEN tb.genres LIKE '%Fantasy%' THEN 'Fantasy'
+		ELSE '-'
+			END 'Fantasy'
+	,CASE 
+		WHEN tb.genres LIKE '%Film-Noir%' THEN 'Film-Noir'
+		ELSE '-'
+			END 'FilmNoir'
+	,CASE 
+		WHEN tb.genres LIKE '%Game-Show%' THEN 'Game-Show'
+		ELSE '-'
+			END 'GameShow'
+	,CASE 
+		WHEN tb.genres LIKE '%History%' THEN 'History'
+		ELSE '-'
+			END 'History'
+	,CASE 
+		WHEN tb.genres LIKE '%Horror%' THEN 'Horror'
+		ELSE '-'
+			END 'Horror'
+	,CASE 
+		WHEN tb.genres LIKE '%Musical%' THEN 'Musical'
+		ELSE '-'
+			END 'Musical'
+	,CASE 
+		WHEN tb.genres LIKE '%Music' THEN 'Music'
+		ELSE '-'
+			END 'Music'
+	,CASE 
+		WHEN tb.genres LIKE '%Mystery&' THEN 'Mystery'
+		ELSE '-'
+			END 'Mystery'
+	,CASE 
+		WHEN tb.genres LIKE '%News%' THEN 'News'
+		ELSE '-'
+			END 'News'
+	,CASE 
+		WHEN tb.genres LIKE '%Reality-TV%' THEN 'Reality-TV'
+		ELSE '-'
+			END 'RealityTV'
+	,CASE 
+		WHEN tb.genres LIKE '%Romance%' THEN 'Romance'
+		ELSE '-'
+			END 'Romance'
+	,CASE 
+		WHEN tb.genres LIKE '%Sci-Fi%' THEN 'SciFi'
+		ELSE '-'
+			END 'SciFi'
+	,CASE 
+		WHEN tb.genres LIKE '%Short%' THEN 'Short'
+		ELSE '-'
+			END 'Short'
+	,CASE 
+		WHEN tb.genres LIKE '%Sport%' THEN 'Sport'
+		ELSE '-'
+			END 'Sport'
+	,CASE 
+		WHEN tb.genres LIKE '%Talk-Show%' THEN 'TalkShow'
+		ELSE '-'
+			END 'TalkShow'
+	,CASE 
+		WHEN tb.genres LIKE '%Thriller%' THEN 'Thriller'
+		ELSE '-'
+			END 'Thriller'
+	,CASE 
+		WHEN tb.genres LIKE '%War%' THEN 'War'
+		ELSE '-'
+			END 'War'
+	,CASE 
+		WHEN tb.genres LIKE '%Western%' THEN 'Western'
+		ELSE '-'
+			END 'Western' 
+FROM 
+	title_akas ta 
+		LEFT JOIN
+			title_basics tb
+			ON
+				tb.tconst = ta.titleId 
+		LEFT JOIN 
+			title_principals tp 
+			ON 
+				tp.tconst = ta.titleId 	
+		LEFT JOIN 
+			name_basics nb 
+			ON tp.nconst = nb.nconst 
+		LEFT JOIN 
+			title_crew tc 
+			ON tc.tconst = ta.titleId 
+		LEFT JOIN 
+			name_basics nb2 
+			ON nb2.nconst = tc.directors  
+WHERE 
+	tb.titleType = 'movie'
+	AND ta.region = 'US'
+	AND (tb.startYear >= 2001
+	AND tb.startYear <= 2021)
+	AND tb.isAdult <> 1
+	AND tp.ordering in (1, 2, 3, 4)
+	AND tb.genres IS NOT NULL
+	AND (tp.category = 'actor'
+	OR tp.category = 'actress')
+	AND nb.birthYear IS NOT NULL
+	AND (nb.deathYear > 1998
+	OR nb.deathYear IS NULL)
+ORDER BY 	ta.titleId  
